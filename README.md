@@ -29,7 +29,9 @@ The functionality is as following:
   - When the temperature is cozy enough, an animation is informing that the conditions are safe for Santa
   - When it's too hot, e.g. due to a recent fire in the fireplace, an animation is showing a sad Santa leaving for the next chimney, accompanied with a sad melody.
 
-The thermal imaging camera has a wide angle field of view (110°x75°), which is very visible in the video in form of the small red spot when there's a fire in the fireplace.
+The thermal imaging camera has a wide angle field of view (110°x75°), which is very visible in the picture and video in form of the small red blotches indicating hot water, or a fire in the fireplace.
+
+![](/images/Hot_water_compr.jpg)
 
 Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/edit) with sound, below same as GIF-animation.
  
@@ -55,6 +57,10 @@ Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/
 
 ![](/images/OLED_compr.jpg)
 
+- [Grove Shield FeatherWing for Particle Mesh](https://www.adafruit.com/product/4309) or a solderless breadboard
+
+![](/images/4309-00_compr.jpg)
+
 - Assorted wires
 - Optional: [Piezo buzzer](https://www.adafruit.com/product/160)
 
@@ -62,19 +68,22 @@ Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/
 
 ## Skills & tools required
 
-For this project, you’ll need
-
+For this project, you’ll need:
 - Particle-flavored, Arduino-style, C++ development IDE
 - No soldering required
-- Optional but recommended:
+- Optional, but recommended to use some type of case for the camera and display, and perhaps a case for the Featherwing. Here are prototypes I designed, for a permanent solution they might benefit from a few improvements:
+  - [3d-printed Featherwing case](/images/Grove%20Shield%20Feather%20Case.stl) Note that I engraved port Grove names on the bottom for making it easierto find correct port. 
   - [3D-printed case](/images/Thermal%20camera%20+%20display.stl)
-
   - [3D-printed lid](/images/Thermal%20imaging%20LID.stl)
+
+![](/images/Case%20and%20lid.jpg)
+
+![](/images/Featherwing_case.jpg)
   
 # Assembly
 
 Only a few steps are needed to assemble the system:
-- Attach the B524 to the Eval Board
+- Attach the Photon 2 to the Featherwing (or breadboard)
 - Connect the cellular antenna to the Eval Board (the Bluetooth antenna can be left unconnected for this project).
 - Connect the Person Sensor to the Eval Board, ensuring that you connect it to the I2C Grove port, not the analog port!
 
