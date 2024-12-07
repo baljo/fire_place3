@@ -4,6 +4,7 @@ Every year, Santa Claus embarks on his magical journey, delivering gifts to good
 
 Imagine Santa's concern as he peers down a chimney, only to find a roaring fire blazing below. Enter the **Santa Chimney Safety System**, a cutting-edge fusion of holiday cheer and modern technology. This project ensures that Santa can safely slide down the chimney without encountering any "fiery surprises."
 
+![](/images/Hot_Unsafe.png)
 
 ## Story
 
@@ -16,7 +17,6 @@ The Santa Safety Game was born—a whimsical yet practical solution to verify ch
 
 But why stop at functionality? To bring the holiday spirit to life, this project adds animations showing a Santa when he can land safely, and another when he's afraid he will get scorched and thus move on to the next chimney, everything accompanied with sound and music.
 
-![](/images/Hot_Unsafe.png)
 
 
 ## Solution
@@ -41,32 +41,24 @@ Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/
 
 ## Bill of materials
 
-- MCU: [Particle M.2 SoM Evaluation Board](https://store.particle.io/products/som-evaluation-board?_pos=1&_sid=a6a33f54b&_ss=r) 
+- MCU: [Photon 2](https://store.particle.io/products/photon-2) or another Particle MCU
 
-![](/images/M2_eval_board_cropped_2.jpg)
+![](/images/Photon%202_compr.jpg)
 
-- [B524](https://store.particle.io/products/b-series-lte-cat1-3g-2g-europe-ethersim?_pos=1&_sid=c3651bdc9&_ss=r), it has cellular and Bluetooth connectivity (no Wi-Fi), but if you want Wi-Fi instead of cellular connectivity, a [Photon 2 dev board](https://store.particle.io/products/photon-2?_pos=1&_sid=5598553d5&_ss=r) can be used and is more cost effective 
+- [Grove Thermal Imaging Camera 32x24 ](https://www.seeedstudio.com/Grove-Thermal-Imaging-Camera-IR-Array-MLX90640-110-degree-p-4334.html)
+  - Seeed Studio have several other thermal cameras with different features, prices, and availability. If you use another resolution, you only need to change a few code lines. 
 
-![](/images/B524_cropped.jpg)
+![](/images/Thermal_camera.jpg)
 
-- [Person Sensor by Useful Sensors](https://www.sparkfun.com/products/21231)
+- Display: [Color OLED Module 96x64](https://www.parallax.com/product/color-oled-display-module-96-x-64/)
+  - You can easily swap this with another display using the SSD1331 driver chip and having same resolution. Other displays using SPI can also be used as long as you find proper libraries.
 
-![](/images/Person_Sensor_cropped.jpg)
+![](/images/OLED_compr.jpg)
 
+- Assorted wires
+- Optional: [Piezo buzzer](https://www.adafruit.com/product/160)
 
-- Optional, but recommended
-  - separate power source for the servo or actuator, especially if the latter is power hungry or under load 
-- Optional
-  - LiPo battery, some [options](https://docs.particle.io/hardware/power/batteries/)
-  - [Linear actuator kit](https://kitronik.co.uk/products/2595-linear-actuator?_pos=3&_sid=e648f346a&_ss=r), you can replace this with any servo, push rod, or larger linear actuator
-
-![](/images/Linear_actuator_cropped.jpg)
-
-
-  - [Qwiic Cable - Grove Adapter (100mm)](https://www.sparkfun.com/products/15109), this if you want an easy way of connecting the Person Sensor to the Grove port on the M.2 SoM Eval Board, another option is to use separate jumper wires.
-
-![](/images/Qwiic_Grove_cable_cropped.jpg)
-
+![](/images/Piezo_buzzer.jpg)
 
 ## Skills & tools required
 
