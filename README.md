@@ -71,7 +71,7 @@ For this project, you’ll need:
 - Particle-flavored, Arduino-style, C++ development IDE
 - No soldering required
 - Optional, but recommended to use some type of case for the camera and display, and perhaps a case for the Featherwing. Here are prototypes I designed, for a permanent solution they might benefit from a few improvements:
-  - [3d-printed Featherwing case](/images/Grove%20Shield%20Feather%20Case.stl) Note that I engraved port Grove names on the bottom for making it easierto find correct port. 
+  - [3d-printed Featherwing case](/images/Grove%20Shield%20Feather%20Case.stl) Note that I engraved port Grove names on the bottom for making it easier to find correct port. (*VAMK* is the university where I teach)
   - [3D-printed case](/images/Thermal%20camera%20+%20display.stl)
   - [3D-printed lid](/images/Thermal%20imaging%20LID.stl)
 
@@ -132,7 +132,7 @@ uint16_t oledBuffer[96 * 64];       // Back buffer for OLED
 
 ```
 
-## Temperature Threshold and Bitmaps
+## Temperature Threshold and Bitmap Initializations
 
 Here you'll find the warning threshold `hot_temp`, i.e. when should it warn that the chimney is too hot for Santa. In this program the average temperature of all the pixels is compared to this threshold, but you can of course use the maximum temp instead if you want. Especially with the wide-angle camera I used, it took a long time until the fire was so hot that the average temperature reached 58°C.
 `show_cozy` is used to determine how often a satisfied Santa should be shown on the display, here it's once a minute.
@@ -148,6 +148,61 @@ uint8_t show_cozy = 60; // How frequently in seconds should cozy Santa be shown
 #include "frame_frame_034.h" 
 #include "frame_frame_034_1.h" 
 ```
+
+## Melodies
+
+Generating sound on a piezo buzzer is done through PWM (Pulse Width Modulation). As all PWM pins on the Photon 2 are assigned to the same timer, you cannot play different notes with different buzzers at the same time. If you want to learn a bit more about sound on the Photon 2, you can e.g. check this [tutorial](https://reparke.github.io/ITP348-Physical-Computing/lectures/week08/lecture_audio.html#optional-controlling-volume-1).
+
+To play notes, it's easier to use note names instead of raw frequencies, these notes are defined in `notes.h`. In addition to the note, you also need to define how long it should be played. So, with "Jingle Bells" below, you see that the three first notes are E4, and further down you see the durations for the notes are quarter notes for the first two, and a half note for the third one. There is online software to convert melodies to a format suitable for piezo buzzers, and you can also try generative AI, although I had mixed experiences with it in this case.
+
+The notes are then played with the function `playMelody`.
+
+```
+// Function to play a melody with a tempo adjustment
+void playMelody(const int *melody, const int *noteDurations, int length, float tempoMultiplier) {
+```
+
+```
+// Melody for "Jingle Bells"
+const int jingle[] = {
+    NOTE_E4, NOTE_E4, NOTE_E4, 
+    NOTE_E4, NOTE_E4, NOTE_E4, 
+    NOTE_E4, NOTE_G4, NOTE_C4, NOTE_D4, NOTE_E4, 
+    NOTE_F4, NOTE_F4, NOTE_F4, NOTE_F4, 
+    NOTE_F4, NOTE_E4, NOTE_E4, NOTE_E4, NOTE_E4, NOTE_D4, NOTE_D4, NOTE_E4, NOTE_D4, NOTE_G4
+};
+// Note durations for "Jingle Bells"
+const int jingleBellsDurations[] = {
+    4, 4, 2, 
+    4, 4, 2, 
+    4, 4, 4, 4, 2, 
+    4, 4, 4, 4, 
+    4, 4, 4, 4, 4, 4, 4, 4, 4, 2
+};
+
+```
+
+## Thermal and Bitmap Image Functions
+
+The function `analyzeFrameData` loops through the thermal data to derive min, max, and average temperatures. As the resolution of the thermal camera is ±1.5°C, it would actually make sense to use integers instead of floats to speed up the operations.
+
+```
+// Function to analyze the frame data and calculate min, max, and average temperatures
+void analyzeFrameData(float* data, int size, float& tempMin, float& tempMax, float& tempAvg) {
+```
+
+This function maps the temperature data to color gradients (Blue -> Cyan -> Green -> Yellow -> Red). The coldest pixels in the image become blue, while the hottest ones become red. In some cases you might want to fix the lower and upper limits, or calibrate against the initially measured temperature data. 
+```
+uint16_t mapTemperatureToColor(float temp, float tempMin, float tempMax) {
+```
+
+Finally, the function `drawStaticImage` copies the requested bitmap to the backbuffer and displays it.
+```
+void drawStaticImage(const uint16_t* image) {
+```
+
+## Main Loops
+
 
 
 # CONCLUSION #
