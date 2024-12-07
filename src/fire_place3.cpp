@@ -2,12 +2,10 @@
 // Date: 2024-12-02, Author: Thomas Vikström
 
 #include "Particle.h"
-//#include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_MLX90640.h>
 #include <Adafruit_SSD1331.h>
 #include <Adafruit_GFX.h>
-//#include <Arduino_ST7789_Fast.h>
 #include <SPI.h>
 #include <notes.h>
 
@@ -19,6 +17,9 @@ Adafruit_MLX90640 mlx;
 #define cs   S3
 #define dc   D5
 #define rst  D4
+
+// Pin for the piezo buzzer
+const int buzzerPin = A2;
 
 Adafruit_SSD1331 display = Adafruit_SSD1331(cs, dc, mosi, sclk, rst);
 float frame[32 * 24];               // Buffer for MLX90640 data
@@ -50,9 +51,6 @@ uint8_t show_cozy = 60; // How frequently in seconds should cozy Santa be shown
 #include "frame_frame_999.h" 
 #include "frame_frame_034.h" 
 #include "frame_frame_034_1.h" 
-
-// Pin for the piezo buzzer
-const int buzzerPin = A2;
 
 // Melody for "Jingle Bells"
 const int jingle[] = {
@@ -186,17 +184,6 @@ void setup() {
     // Initialize OLED display
     display.begin();
     display.fillScreen(BLACK);
-
-    // // Display static images using the back buffer
-    // for(int i=0; i<1;i++){
-    //     drawStaticImage(frame_frame_000); 
-    //     drawStaticImage(frame_frame_999); 
-    // }
-    // for(int i=0; i<1;i++){    
-    //     drawStaticImage(frame_frame_034);    
-    //     drawStaticImage(frame_frame_034_1);    
-    // }
-
     display.setTextSize(2);
     display.setTextColor(0xF800); // RED color in RGB565
 
@@ -235,7 +222,6 @@ void setup() {
     display.setCursor(70, 45);
     display.print(23.6, 1);                 // Showing cozy temp
     playMelody(up, downDurations, sizeof(up) / sizeof(up[0]), 0.8);
-
 
     delay(1000);
 

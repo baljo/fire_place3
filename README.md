@@ -83,9 +83,9 @@ For this project, you’ll need:
 
 Only a few steps are needed to assemble the system:
 - Attach the Photon 2 to the Featherwing (or breadboard)
-- Connect the camera with a Grove cable to port A2 on the Featherwing
+- Connect the camera with a Grove cable to port I2C2 on the Featherwing
 - Connect the display with jumper wires **************************************
-- Optional: Connect the piezo buzzer with two wires *******************************
+- Optional: Connect the piezo buzzer with two wires, i used A2 for the positive pin, and GND for the negative.
 
 - Connect the cellular antenna to the Eval Board (the Bluetooth antenna can be left unconnected for this project).
 - Connect the Person Sensor to the Eval Board, ensuring that you connect it to the I2C Grove port, not the analog port!
@@ -94,9 +94,48 @@ Only a few steps are needed to assemble the system:
 
 
 
-## Software apps and online services
+# Code Explanations
 
-- Visual Studio Code with the Particle Workbench extension installed
+Once the devices are physically connected and working, it's relatively simple to display text data from the thermal camera to the OLED display. The main challenge lies in converting temperature data to a color scale, interpolate it while converting between different resolutions and aspect ratios (32x24 vs 96x64). Once that is accomplished, the code might need to be optimized and speeded up to achieve better FPS than 0.5. Another challenge is to convert and optimize bitmaps for the animations.
+
+## Thermal Image Frame Rate 
+While showing thermal images the frame rate is around 1 - 2 FPS which is sufficient in many cases, especially as temperatures are generally not changing very quickly. Still it should be possible to double or even triple the frame rate by using higher SPI and I2C frequencies, these though might need shorter and/or soldered wires. The code can most probably be optimized even more, especially by using integers instead of floats in the processor-heavy loops, and also by decreasing accuracy.
+
+## Bitmap Frame Rate
+The original idea was to show GIF-animations on the display, but due to the slowness I needed to stick to only show a static image with blinking text. Again, this too can probably be optimized by using other methods for writing to the display
+
+The Santa bitmaps were created with a free online tool, and then I used the magick-program to convert them to correct resolution (using this command line prompt: `magick convert magick convert tenor3-ezgif.com-optimize.gif -resize 64x96! -depth 8 frame_%03d.bmp`. To be able to use the bitmaps I converted them to .h-files using [this Python-program](/src/convert_bmp_to_h.py) I created.
+
+
+## Camera, Display, and Piezo Buzzer Settings
+
+From line 12 or so in the [main program](/src/fire_place3.cpp) you'll find connection and resolution settings for the camera, display, and piezo buzzer.
+
+
+```
+// MLX90640 thermal imaging camera
+Adafruit_MLX90640 mlx;
+
+// OLED display
+#define mosi S0
+#define sclk S2
+#define cs   S3
+#define dc   D5
+#define rst  D4
+
+// Pin for the piezo buzzer
+const int buzzerPin = A2;
+
+Adafruit_SSD1331 display = Adafruit_SSD1331(cs, dc, mosi, sclk, rst);
+float frame[32 * 24];               // Buffer for MLX90640 data
+uint16_t oledBuffer[96 * 64];       // Back buffer for OLED
+
+// Define screen resolution and color range
+#define SCREEN_WIDTH 96
+#define SCREEN_HEIGHT 64
+
+```
+
 
 
 
