@@ -21,7 +21,7 @@ But why stop at functionality? To bring the holiday spirit to life, this project
 
 ## Solution
 
-While Santa could survive by you using only a temperature sensor a simple electronics, what's the fun and challenging in that? Thus I decided to challenge myself and integrate an IR thermal imaging camera, a color OLED display, and a tiny piezo buzzer, all connected to a Photon 2. 
+While Santa could survive by you using only a temperature sensor and simple electronics, what's the fun and challenging in that? Thus I decided to challenge myself and integrate an IR thermal imaging camera, a color OLED display, and a tiny piezo buzzer, all connected to a Photon 2. 
 The functionality is as following:
 - The thermal camera measures temperature at a resolution of 32x24 (768 pixels).
   - In addition to raw values, an average + min and max temps are derived 
@@ -61,7 +61,7 @@ Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/
 
 ![](/images/4309-00_compr.jpg)
 
-- Assorted wires
+- Assorted jumper wires, for connecting the display I recommend female to male wires.
 - Optional: [Piezo buzzer](https://www.adafruit.com/product/160)
 
 ![](/images/Piezo_buzzer.jpg)
@@ -84,6 +84,9 @@ For this project, you’ll need:
 
 Only a few steps are needed to assemble the system:
 - Attach the Photon 2 to the Featherwing (or breadboard)
+- Connect the camera with a Grove cable to port A2 on the Featherwing
+- Connect 
+
 - Connect the cellular antenna to the Eval Board (the Bluetooth antenna can be left unconnected for this project).
 - Connect the Person Sensor to the Eval Board, ensuring that you connect it to the I2C Grove port, not the analog port!
 
