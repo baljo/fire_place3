@@ -16,18 +16,14 @@ The Santa Safety Game was born—a whimsical yet practical solution to verify ch
 
 But why stop at functionality? To bring the holiday spirit to life, this project adds animations showing a Santa when he can land safely, and another when he's afraid he will get scorched and thus move on to the next chimney.
 
-
+![](/images/Hot_Unsafe.png)
 
 
 ## Solution
 
-The solution? Build a device that peers out the window, detects if someone’s looking in, and sends an alert only when it recognizes Santa. No false alarms here—your neighbors, friends, and even foes won't trigger it!
+While you (and Santa) could survive by using only 
 
-One way is to use a camera connected to a microcontroller or computer and use a machine learning model trained to recognize Santa. The drawback is that you might need to spend up to $100 for a good enough camera and microcontroller and spend hours of building a ML model. 
-
-An even more elegant—and budget-friendly—approach is to use a Particle Photon 2 and a Person Sensor from Useful Sensors. At the time of writing both of them are priced below $10! Depending on how you want to get alerted, through a notification or some more mechanical way, you might need to spend a few more dollars at hardware.
-
-As I in a [previous project](https://www.particle.io/blog/how-to-unlock-a-door-with-your-face-using-particle/) had used the M2 SoM Evaluation Board and a B524 SoM, I decided to use the same setup, but there's nothing hindering you using e.g. Photon 2 instead. In this project physical bells are jingled with the help of the servo motor when Santa is detected.
+SoM Evaluation Board and a B524 SoM, I decided to use the same setup, but there's nothing hindering you using e.g. Photon 2 instead. In this project physical bells are jingled with the help of the servo motor when Santa is detected.
 
 ## How does it work?
 
