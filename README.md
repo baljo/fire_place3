@@ -14,30 +14,27 @@ The Santa Safety Game was born—a whimsical yet practical solution to verify ch
 - **Santa-Safe:** The fire is out, and Santa can land with a big "Ho Ho Ho!"
 - **Santa-Unsafe:** The fireplace is too hot, and Santa must move on to the next house.
 
-But why stop at functionality? To bring the holiday spirit to life, this project adds animations showing a Santa when he can land safely, and another when he's afraid he will get scorched and thus move on to the next chimney.
+But why stop at functionality? To bring the holiday spirit to life, this project adds animations showing a Santa when he can land safely, and another when he's afraid he will get scorched and thus move on to the next chimney, everything accompanied with sound and music.
 
 ![](/images/Hot_Unsafe.png)
 
 
 ## Solution
 
-While you (and Santa) could survive by using only 
+While Santa could survive by you using only a temperature sensor a simple electronics, what's the fun and challenging in that? Thus I decided to challenge myself and integrate an IR thermal imaging camera, a color OLED display, and a tiny piezo buzzer, all connected to a Photon 2. 
+The functionality is as following:
+- The thermal camera measures temperature at a resolution of 32x24 (768 pixels).
+  - In addition to raw values, an average + min and max temps are derived 
+- The measured temperature is shown on a color OLED display, interpolated to fill the whole screen.
+  - When the temperature is cozy enough, an animation is informing that the conditions are safe for Santa
+  - When it's too hot, e.g. due to a recent fire in the fireplace, an animation is showing a sad Santa leaving for the next chimney, accompanied with a sad melody.
 
-SoM Evaluation Board and a B524 SoM, I decided to use the same setup, but there's nothing hindering you using e.g. Photon 2 instead. In this project physical bells are jingled with the help of the servo motor when Santa is detected.
+The thermal imaging camera has a wide angle field of view (110°x75°), which is very visible in the video in form of the small red spot when there's a fire in the fireplace.
 
-## How does it work?
+Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/edit) with sound, below same as GIF-animation.
+ 
 
-From a user perspective, the process is straightforward:
-
-- The sensor continuously checks for faces in its view.
-- If a face is detected:
-  - It checks whether the face matches one of the eight identities it has been calibrated to recognize.
-  - If a matching face (= Santa) is found, the Particle device signals the servo accordingly.
-  - A mobile notification is sent via Pushover to let you know Santa's in town!
-
-Below a GIF-video demonstrating the behavior, here's a short [video clip](https://youtube.com/shorts/aByAacTvO_A) with sound. The Person Sensor indicates with its green LED (barely visible in the Youtube video) that there are faces visible in its view, but the program acts only when it recognizes Santa. The Person Sensor is almost touching the window to reduce glaring from the window glass.
-
-![](/images/Santa_Detector.gif)
+![](/videos/Santa_safe.and_unsafe-ezgif.com-optimize.gif)
 
 
 
