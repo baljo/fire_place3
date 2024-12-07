@@ -1,0 +1,189 @@
+// Display thermal image and pre-decoded GIF frames on OLED using Adafruit SSD1331
+// Date: 2024-12-01, Author: Thomas Vikström
+
+#include "Particle.h"
+#include <Wire.h>
+#include <Adafruit_MLX90640.h>
+#include <Adafruit_SSD1331.h>
+#include <Adafruit_GFX.h>
+#include <SPI.h>
+
+// Include pre-decoded GIF frames
+#include "frame_frame_000.h"
+// #include "frame_frame_001.h"
+// #include "frame_frame_002.h" // Add all generated .h files here
+
+// Define the MLX90640 and OLED display
+Adafruit_MLX90640 mlx;
+
+#define mosi S0
+#define sclk S2
+#define cs   S3
+#define dc   D5
+#define rst  D4
+
+// Color definitions
+#define	BLACK           0x0000
+#define	BLUE            0x001F
+#define	RED             0xF800
+#define	GREEN           0x07E0
+#define CYAN            0x07FF
+#define MAGENTA         0xF81F
+#define YELLOW          0xFFE0
+#define WHITE           0xFFFF
+
+Adafruit_SSD1331 display = Adafruit_SSD1331(cs, dc, mosi, sclk, rst);
+float frame[32 * 24];               // Buffer for MLX90640 data
+uint16_t oledBuffer[96 * 64];       // Back buffer for OLED
+
+// Define screen resolution and color range
+#define SCREEN_WIDTH 96
+#define SCREEN_HEIGHT 64
+
+// GIF playback variables
+#define GIF_PLAY_DURATION 10000 // 10 seconds in milliseconds
+unsigned long gifStartTime;
+bool gifPlayed = false;
+const uint16_t* gifFrames[] = { frame_frame_000 }; // Pre-decoded RGB565 arrays
+const int gifFrameDelays[] = { 100, 100, 100 }; // Frame delays in ms
+const int totalFrames = sizeof(gifFrames) / sizeof(gifFrames[0]);
+
+// Precomputed data arrays
+float mlxMapX[SCREEN_WIDTH], mlxMapY[SCREEN_HEIGHT]; // Mapping from OLED to MLX90640
+uint16_t gradient[256]; // Precomputed gradient array
+
+
+
+// Function to find the minimum and maximum temperatures in the frame
+void findMinMaxTemp(float* data, int size, float& tempMin, float& tempMax) {
+    tempMin = data[0];
+    tempMax = data[0];
+    for (int i = 1; i < size; i++) {
+        if (data[i] < tempMin) tempMin = data[i];
+        if (data[i] > tempMax) tempMax = data[i];
+    }
+}
+
+// Function to map temperature to precomputed color gradient
+uint16_t mapTemperatureToColor(float temp, float tempMin, float tempMax) {
+    uint8_t index = (uint8_t)((temp - tempMin) / (tempMax - tempMin) * 255);
+    index = max(0, min(255, index)); // Clamp index to valid range
+    return gradient[index]; // Return precomputed color
+}
+
+// Function to interpolate temperature data for OLED
+float interpolate(float x, float y, float* data, int width, int height) {
+    int x0 = (int)x;
+    int x1 = min(x0 + 1, width - 1);
+    int y0 = (int)y;
+    int y1 = min(y0 + 1, height - 1);
+
+    float dx = x - x0;
+    float dy = y - y0;
+
+    float value = (1 - dx) * (1 - dy) * data[y0 * width + x0] +
+                  dx * (1 - dy) * data[y0 * width + x1] +
+                  (1 - dx) * dy * data[y1 * width + x0] +
+                  dx * dy * data[y1 * width + x1];
+
+    return value;
+}
+
+void setup() {
+    Serial.begin(115200);
+    while (!Serial) delay(10);
+
+    // Initialize OLED display
+    display.begin();
+    display.fillScreen(BLACK);
+
+    // Start GIF playback timer
+    gifStartTime = millis();
+    gifPlayed = false;
+
+    // Initialize MLX90640 sensor
+    if (!mlx.begin(MLX90640_I2CADDR_DEFAULT, &Wire)) {
+        Serial.println("MLX90640 not found!");
+        while (1) delay(10);
+    }
+    mlx.setMode(MLX90640_CHESS);
+    mlx.setResolution(MLX90640_ADC_18BIT);
+    mlx.setRefreshRate(MLX90640_4_HZ);
+
+    // Precompute OLED-to-MLX mapping
+    for (uint8_t i = 0; i < SCREEN_WIDTH; i++) {
+        mlxMapX[i] = i * (32.0 / SCREEN_WIDTH);
+    }
+    for (uint8_t i = 0; i < SCREEN_HEIGHT; i++) {
+        mlxMapY[i] = i * (24.0 / SCREEN_HEIGHT);
+    }
+
+    // Precompute color gradient
+    for (uint8_t i = 0; i < 256; i++) {
+        float normalized = i / 255.0;
+        uint8_t red = 0, green = 0, blue = 0;
+
+        if (normalized <= 0.25) {
+            blue = 255;
+            green = (uint8_t)(normalized * 4 * 255);
+        } else if (normalized <= 0.5) {
+            blue = (uint8_t)((0.5 - normalized) * 4 * 255);
+            green = 255;
+        } else if (normalized <= 0.75) {
+            green = 255;
+            red = (uint8_t)((normalized - 0.5) * 4 * 255);
+        } else {
+            red = 255;
+            green = (uint8_t)((1.0 - normalized) * 4 * 255);
+        }
+
+        gradient[i] = display.color565(red, green, blue);
+    }
+}
+
+void loop() {
+    static unsigned long lastFrameTime = 0;
+    static int currentFrame = 0;
+
+    // Play GIF for 10 seconds
+    if (!gifPlayed) {
+        unsigned long currentTime = millis();
+
+        if (currentTime - gifStartTime < GIF_PLAY_DURATION) {
+            // Display GIF frame-by-frame
+            if (millis() - lastFrameTime > gifFrameDelays[currentFrame]) {
+                lastFrameTime = millis();
+                display.drawRGBBitmap(0, 0, gifFrames[currentFrame], SCREEN_WIDTH, SCREEN_HEIGHT);
+                currentFrame = (currentFrame + 1) % totalFrames;
+            }
+            return; // Exit loop to continue GIF playback
+        } else {
+            gifPlayed = true; // Mark GIF as played
+            display.fillScreen(BLACK); // Clear screen after GIF
+        }
+    }
+
+    // Get the thermal data from the MLX90640
+    if (mlx.getFrame(frame) != 0) {
+        Serial.println("Failed to read frame!");
+        return;
+    }
+
+    // Find the minimum and maximum temperatures in the frame
+    float tempMin, tempMax;
+    findMinMaxTemp(frame, 32 * 24, tempMin, tempMax);
+
+    // Fill the OLED buffer with interpolated and color-mapped data
+    for (uint8_t screenY = 0; screenY < SCREEN_HEIGHT; screenY++) {
+        for (uint8_t screenX = 0; screenX < SCREEN_WIDTH; screenX++) {
+            float mlxX = mlxMapX[screenX];
+            float mlxY = mlxMapY[screenY];
+            float temp = interpolate(mlxX, mlxY, frame, 32, 24);
+
+            oledBuffer[screenY * SCREEN_WIDTH + screenX] = mapTemperatureToColor(temp, tempMin, tempMax);
+        }
+    }
+
+    // Push the entire buffer to the OLED
+    display.drawRGBBitmap(0, 0, oledBuffer, SCREEN_WIDTH, SCREEN_HEIGHT);
+}

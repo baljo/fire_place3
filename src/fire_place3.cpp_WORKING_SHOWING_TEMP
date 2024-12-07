@@ -1,0 +1,288 @@
+/* 
+ * Project myProject
+ * Author: Your Name
+ * Date: 
+ * For comprehensive documentation and examples, please visit:
+ * https://docs.particle.io/firmware/best-practices/firmware-template/
+ */
+
+// Include Particle Device OS APIs
+#include "Particle.h"
+
+
+// Let Device OS manage the connection to the Particle Cloud
+SYSTEM_MODE(AUTOMATIC);
+
+// Run the application and system concurrently in separate threads
+SYSTEM_THREAD(ENABLED);
+
+// Show system, cloud connectivity, and application logs over USB
+// View logs with CLI using 'particle serial monitor --follow'
+SerialLogHandler logHandler(LOG_LEVEL_INFO);
+
+#include <Wire.h>
+
+#include <Adafruit_MLX90640.h>
+
+#define SSD1331
+
+#ifdef SSD1331
+  #include <Adafruit_SSD1331.h>
+  #include <Adafruit_GFX.h>
+  #include <SPI.h>
+#endif
+
+
+Adafruit_MLX90640 mlx;
+float frame[32*24]; // buffer for full frame of temperatures
+
+// uncomment *one* of the below
+//#define PRINT_TEMPERATURES
+#define PRINT_ASCIIART
+
+
+  // You can use any (4 or) 5 pins
+#define mosi S0
+#define sclk S2
+#define cs   S3
+#define dc   D5
+#define rst  D4
+
+// Color definitions
+#define	BLACK           0x0000
+#define	BLUE            0x001F
+#define	RED             0xF800
+#define	GREEN           0x07E0
+#define CYAN            0x07FF
+#define MAGENTA         0xF81F
+#define YELLOW          0xFFE0
+#define WHITE           0xFFFF
+
+#ifdef SSD1331
+  // Option 1: use any pins but a little slower
+  Adafruit_SSD1331 display = Adafruit_SSD1331(cs, dc, mosi, sclk, rst);
+#endif
+
+  // Option 2: must use the hardware SPI pins
+  // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
+  // an output. This is much faster - also required if you want
+  // to use the microSD card (see the image drawing example)
+  // Adafruit_SSD1331 display = Adafruit_SSD1331(&SPI, cs, dc, rst);
+
+  float p = 3.1415926;
+
+
+
+
+#ifdef SSD1331
+/**************************************************************************/
+/*!
+    @brief  Renders a simple test pattern on the LCD
+*/
+/**************************************************************************/
+void lcdTestPattern(void)
+{
+  uint8_t w,h;
+  display.setAddrWindow(0, 0, 96, 64);
+
+  for (h = 0; h < 64; h++) {
+    for (w = 0; w < 96; w++) {
+      if (w > 83) {
+        display.writePixel(w, h, WHITE);
+      } else if (w > 71) {
+        display.writePixel(w, h, BLUE);
+      } else if (w > 59) {
+        display.writePixel(w, h, GREEN);
+      } else if (w > 47) {
+        display.writePixel(w, h, CYAN);
+      } else if (w > 35) {
+        display.writePixel(w, h, RED);
+      } else if (w > 23) {
+        display.writePixel(w, h, MAGENTA);
+      } else if (w > 11) {
+        display.writePixel(w, h, YELLOW);
+      } else {
+        display.writePixel(w, h, BLACK);
+      }
+    }
+  }
+  display.endWrite();
+}
+#endif
+
+
+
+
+
+
+
+// setup() runs once, when the device is first turned on
+void setup() {
+ while (!Serial) delay(10);
+  Serial.begin(115200);
+  delay(100);
+
+  Serial.println("Adafruit MLX90640 Simple Test");
+  if (! mlx.begin(MLX90640_I2CADDR_DEFAULT, &Wire)) {
+    Serial.println("MLX90640 not found!");
+    while (1) delay(10);
+  }
+  Serial.println("Found Adafruit MLX90640");
+
+  Serial.print("Serial number: ");
+  Serial.print(mlx.serialNumber[0], HEX);
+  Serial.print(mlx.serialNumber[1], HEX);
+  Serial.println(mlx.serialNumber[2], HEX);
+
+  //mlx.setMode(MLX90640_INTERLEAVED);
+  mlx.setMode(MLX90640_CHESS);
+  Serial.print("Current mode: ");
+  if (mlx.getMode() == MLX90640_CHESS) {
+    Serial.println("Chess");
+  } else {
+    Serial.println("Interleave");
+  }
+
+  mlx.setResolution(MLX90640_ADC_18BIT);
+  Serial.print("Current resolution: ");
+  mlx90640_resolution_t res = mlx.getResolution();
+  switch (res) {
+    case MLX90640_ADC_16BIT: Serial.println("16 bit"); break;
+    case MLX90640_ADC_17BIT: Serial.println("17 bit"); break;
+    case MLX90640_ADC_18BIT: Serial.println("18 bit"); break;
+    case MLX90640_ADC_19BIT: Serial.println("19 bit"); break;
+  }
+
+  mlx.setRefreshRate(MLX90640_2_HZ);
+  Serial.print("Current frame rate: ");
+  mlx90640_refreshrate_t rate = mlx.getRefreshRate();
+  switch (rate) {
+    case MLX90640_0_5_HZ: Serial.println("0.5 Hz"); break;
+    case MLX90640_1_HZ: Serial.println("1 Hz"); break;
+    case MLX90640_2_HZ: Serial.println("2 Hz"); break;
+    case MLX90640_4_HZ: Serial.println("4 Hz"); break;
+    case MLX90640_8_HZ: Serial.println("8 Hz"); break;
+    case MLX90640_16_HZ: Serial.println("16 Hz"); break;
+    case MLX90640_32_HZ: Serial.println("32 Hz"); break;
+    case MLX90640_64_HZ: Serial.println("64 Hz"); break;
+  }
+
+#ifdef SSD1331
+  display.begin();
+
+  Serial.println("init");
+  uint16_t time = millis();
+  display.fillScreen(BLACK);
+  time = millis() - time;
+
+  Serial.println(time, DEC);
+  delay(500);
+
+  //lcdTestPattern();
+  delay(100);
+
+  display.setTextSize(2); // Default size is 1 (use 2, 3, etc., for larger text)
+
+  // display.fillScreen(BLACK);
+  // display.setCursor(0,0);
+  // display.print("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa");
+  // delay(1000);
+
+  // // tft print function!
+  // tftPrintTest();
+  // delay(2000);
+
+  // //a single pixel
+  // display.drawPixel(display.width()/2, display.height()/2, GREEN);
+  // delay(500);
+
+  // // line draw test
+  // testlines(YELLOW);
+  // delay(500);
+
+  // // optimized lines
+  // testfastlines(RED, BLUE);
+  // delay(500);
+
+  // testdrawrects(GREEN);
+  // delay(1000);
+
+  // testfillrects(YELLOW, MAGENTA);
+  // delay(1000);
+
+  // display.fillScreen(BLACK);
+  // testfillcircles(10, BLUE);
+  // testdrawcircles(10, WHITE);
+  // delay(1000);
+
+  // testroundrects();
+  // delay(500);
+
+  // testtriangles();
+  // delay(500);
+
+  // Serial.println("done");
+  // delay(1000);
+#endif
+
+}
+
+
+
+// loop() runs over and over again, as quickly as it can execute.
+void loop() {
+  // The core of your code will likely live here.
+
+  // Example: Publish event to cloud every 10 seconds. Uncomment the next 3 lines to try it!
+  // Log.info("Sending Hello World to the cloud!");
+  // Particle.publish("Hello world!");
+  // delay( 10 * 1000 ); // milliseconds and blocking - see docs for more info!
+
+  //delay(500);
+  if (mlx.getFrame(frame) != 0) {
+    Serial.println("Failed");
+    return;
+  }
+
+#ifdef SSD1331
+
+    // Clear only the area where the value is displayed
+  display.fillRect(10, 10, 80, 20, BLACK); // x, y, width, height, color
+  display.setCursor(10, 10); // Set the position
+  display.print(mlx.getTa(false));      // Print the value
+  //display.display();         // Render to screen
+
+  //display.print(mlx.getTa(false));
+#endif
+
+  Serial.println("===================================");
+  Serial.print("Ambient temperature = ");
+  Serial.print(mlx.getTa(false)); // false = no new frame capture
+  Serial.println(" degC");
+  Serial.println();
+  Serial.println();
+  for (uint8_t h=0; h<24; h++) {
+    for (uint8_t w=0; w<32; w++) {
+      float t = frame[h*32 + w];
+#ifdef PRINT_TEMPERATURES
+      Serial.print(t, 1);
+      Serial.print(", ");
+#endif
+#ifdef PRINT_ASCIIART
+      char c = '&';
+      if (t < 20) c = ' ';
+      else if (t < 23) c = '.';
+      else if (t < 25) c = '-';
+      else if (t < 27) c = '*';
+      else if (t < 29) c = '+';
+      else if (t < 31) c = 'x';
+      else if (t < 33) c = '%';
+      else if (t < 35) c = '#';
+      else if (t < 37) c = 'X';
+      Serial.print(c);
+#endif
+    }
+    Serial.println();
+  }
+}
+
