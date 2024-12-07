@@ -64,22 +64,13 @@ Here's a link to a [YouTube video](https://studio.youtube.com/video/2iiJ5c-oN7o/
 
 For this project, you’ll need
 
-- A Particle account and basic understanding of the Particle platform's capabilities.
-- Particle-flavored, Arduino-style, C++ development.
+- Particle-flavored, Arduino-style, C++ development IDE
 - No soldering required
-- Optional but strongly recommended:
-  - [3D-printed case](/images/Linear_actuator_holder.stl) for the linear actuator, this can be fastened on any standard camera tripod or the [gooseneck](https://www.amazon.de/-/en/SUNNINGUP-Webcam-Holder-Gooseneck-Logitech/dp/B0CY1XCK5Y?crid=2WFW7HQM0HJPJ&dib=eyJ2IjoiMSJ9.kT3ZM6nWF0QKwosUQT_7Zq7jwWNwwZ8WvtMwOnsT8BZB1YZatMffhUGVJ9v7VmbB6F0LRjLQwBTMhXCrjN0eL_oO6GXo6AwQT3qCoP9wAKfZoJhlRgNDi21J_63oxpuw1q6M_synfozWbhuBRjnp_lzQP1CZA_pqM8mBNxlh91G__mYFKp-3W7TjKo_ue9WQ-rurY08xTsVJNB-5aWHc9owTR8U0kZnV634K6-KGCno.96RiRaGgM76K_7PEJZX35qy5HXdGSG0hmovSdrlnwe4&dib_tag=se&keywords=gooseneck+tripod&qid=1725531849&sprefix=gooseneck+tripod%2Caps%2C92&sr=8-10) I used
+- Optional but recommended:
+  - [3D-printed case](/images/Thermal%20camera%20+%20display.stl)
 
-![](/images/Linear_actuator_case.jpg)
-
-![](/images/Linear_actuator_case_photo_compr.jpg)
-
-  - [3D-printed enclosure](/images/Person%20Sensor%20Body_v1.1.stl) and [back plate](/images/Person%20Sensor%20Back%20Plate.stl) for the Person Sensor 
-
-![](/images/Person%20Sensor%20enclosure%20and%20back%20plate.jpg)
-
-![](/images/Person%20sensor%20enclosure_compr.jpg)
-
+  - [3D-printed lid](/images/Thermal%20imaging%20LID.stl)
+  
 # Assembly
 
 Only a few steps are needed to assemble the system:
