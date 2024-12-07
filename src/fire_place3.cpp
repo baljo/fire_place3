@@ -292,8 +292,7 @@ void loop() {
     display.setCursor(60, 5);
     display.print(tempMax, 1);
 
-    tempAvg = (tempMax + tempMin) / 2;
-
+  
     if(tempAvg >= hot_temp) {
 
         display.fillScreen(BLACK);
@@ -316,7 +315,6 @@ void loop() {
     }
 
 
-    // tempAvg = (tempMax + tempMin) / 2;
     // Perform an action once per minute
     unsigned long currentTime = millis(); // Get current time in milliseconds
     if (currentTime - lastActionTime >= show_cozy * 1000) { 

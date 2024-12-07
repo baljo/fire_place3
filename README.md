@@ -201,9 +201,45 @@ Finally, the function `drawStaticImage` copies the requested bitmap to the backb
 void drawStaticImage(const uint16_t* image) {
 ```
 
-## Main Loops
+## Main Loop
 
+In the `loop()`-function the main functionality is the "heavy" loop which is color-mapping and interpolating between the thermal camera and the display.
 
+```
+    // Fill the OLED buffer with interpolated and color-mapped data
+    for (uint8_t screenY = 0; screenY < SCREEN_HEIGHT; screenY++) {
+        for (uint8_t screenX = 0; screenX < SCREEN_WIDTH; screenX++) {
+            float mlxX = mlxMapX[screenX];
+            float mlxY = mlxMapY[screenY];
+            float temp = interpolate(mlxX, mlxY, frame, 32, 24);
+
+            oledBuffer[screenY * SCREEN_WIDTH + screenX] = mapTemperatureToColor(temp, tempMin, tempMax);
+        }
+    }
+
+```
+
+In addition, you'll also find the functions displaying numeric data on the display, as well as the conditional settings when to react on the temperature.
+
+```
+    // Display min and max temperatures
+    display.setCursor(10, 5);
+    display.print(tempMin, 1);
+    display.setCursor(60, 5);
+    display.print(tempMax, 1);
+
+  
+    if(tempAvg >= hot_temp) {
+.......................
+
+    // Perform an action once per minute
+    unsigned long currentTime = millis(); // Get current time in milliseconds
+    if (currentTime - lastActionTime >= show_cozy * 1000) { 
+        lastActionTime = currentTime; // Update the timestamp
+
+        // Add your code here for actions to be performed once per minute
+        if(tempAvg < hot_temp) {
+```
 
 # CONCLUSION #
 
