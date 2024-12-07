@@ -87,19 +87,15 @@ Only a few steps are needed to assemble the system:
 - Connect the display with jumper wires **************************************
 - Optional: Connect the piezo buzzer with two wires, i used A2 for the positive pin, and GND for the negative.
 
-- Connect the cellular antenna to the Eval Board (the Bluetooth antenna can be left unconnected for this project).
-- Connect the Person Sensor to the Eval Board, ensuring that you connect it to the I2C Grove port, not the analog port!
-
-![](/images/Grove_connector_cropped.jpg)
 
 
 
 # Code Explanations
 
-Once the devices are physically connected and working, it's relatively simple to display text data from the thermal camera to the OLED display. The main challenge lies in converting temperature data to a color scale, interpolate it while converting between different resolutions and aspect ratios (32x24 vs 96x64). Once that is accomplished, the code might need to be optimized and speeded up to achieve better FPS than 0.5. Another challenge is to convert and optimize bitmaps for the animations.
+Once the devices are physically connected and working, it's relatively simple to display **text data** from the thermal camera to the OLED display. The main challenge lies in converting temperature data to a color scale, interpolate it while converting between different resolutions and aspect ratios (32x24 vs 96x64). Once that is accomplished, the code might need to be optimized and speeded up to achieve better FPS than 0.5. Another challenge is to convert and optimize bitmaps for the animations.
 
 ## Thermal Image Frame Rate 
-While showing thermal images the frame rate is around 1 - 2 FPS which is sufficient in many cases, especially as temperatures are generally not changing very quickly. Still it should be possible to double or even triple the frame rate by using higher SPI and I2C frequencies, these though might need shorter and/or soldered wires. The code can most probably be optimized even more, especially by using integers instead of floats in the processor-heavy loops, and also by decreasing accuracy.
+While showing thermal images the frame rate is around 1 - 2 FPS which is sufficient in many cases, especially as temperatures are generally not changing very quickly. Still, it should be possible to double or even triple the frame rate by using higher SPI and I2C frequencies, these though might need shorter and/or soldered wires. The code can most probably be optimized even more, especially by using integers instead of floats in the processor-heavy loops, and also by decreasing color accuracy.
 
 ## Bitmap Frame Rate
 The original idea was to show GIF-animations on the display, but due to the slowness I needed to stick to only show a static image with blinking text. Again, this too can probably be optimized by using other methods for writing to the display
@@ -109,7 +105,7 @@ The Santa bitmaps were created with a free online tool, and then I used the magi
 
 ## Camera, Display, and Piezo Buzzer Settings
 
-From line 12 or so in the [main program](/src/fire_place3.cpp) you'll find connection and resolution settings for the camera, display, and piezo buzzer.
+From line 12 or so in the [main program](/src/fire_place3.cpp) you'll find connection and resolution settings for the camera, display, and piezo buzzer. Change these as per your own devices and connections in use.
 
 
 ```
@@ -136,7 +132,22 @@ uint16_t oledBuffer[96 * 64];       // Back buffer for OLED
 
 ```
 
+## Temperature Threshold and Bitmaps
 
+Here you'll find the warning threshold `hot_temp`, i.e. when should it warn that the chimney is too hot for Santa. In this program the average temperature of all the pixels is compared to this threshold, but you can of course use the maximum temp instead if you want. Especially with the wide-angle camera I used, it took a long time until the fire was so hot that the average temperature reached 58°C.
+`show_cozy` is used to determine how often a satisfied Santa should be shown on the display, here it's once a minute.
+The `#include "frame...`-lines includes the four bitmap .h-files that will be used later.  
+
+```
+float hot_temp = 58.0;  // In Celsius
+uint8_t show_cozy = 60; // How frequently in seconds should cozy Santa be shown 
+
+// This file contains the RGB565 array for the static image
+#include "frame_frame_000.h" 
+#include "frame_frame_999.h" 
+#include "frame_frame_034.h" 
+#include "frame_frame_034_1.h" 
+```
 
 
 # CONCLUSION #
