@@ -266,3 +266,4 @@ While this system might seem unnecessary for a once-a-year task, it demonstrates
 
 Feel free to clone my [GitHub repo](https://github.com/baljo/fire_place3) to build your own **Santa Chimney Safety System**!
 
+![](/images/A_cheerful_Santa_Claus_standing_near_a_fireplace.jpg)
