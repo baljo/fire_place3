@@ -74,6 +74,7 @@ For this project, you’ll need:
   - [3d-printed Featherwing case](/images/Grove%20Shield%20Feather%20Case.stl) Note that I engraved port Grove names on the bottom for making it easier to find correct port. (*VAMK* is the university where I teach)
   - [3D-printed case](/images/Thermal%20camera%20+%20display.stl)
   - [3D-printed lid](/images/Thermal%20imaging%20LID.stl)
+  - I tend to use TPU for these type of scenarios as a little flexibility makes it easy to assemble and disassemble. I learned the hard way that printing TPU with a speed of 140 mm/s (direct drive) might jam the extruder completely, leading to complete disassembly of it... 
 
 ![](/images/Case%20and%20lid.jpg)
 
@@ -84,7 +85,30 @@ For this project, you’ll need:
 Only a few steps are needed to assemble the system:
 - Attach the Photon 2 to the Featherwing (or breadboard)
 - Connect the camera with a Grove cable to port I2C2 on the Featherwing
-- Connect the display with jumper wires **************************************
+- Connect the display with jumper wires 
+
+| Display   | Photon 2  |
+| --------  | -------   |
+| mosi      | S0        |
+| sclk      | S2        |
+| cs        | S3        |
+| dc        | D5        |
+| rst       | D4        |
+| gnd       | gnd       |
+| vcc       | 3V3       |
+
+
+#define mosi S0
+#define sclk S2
+#define cs   S3
+#define dc   D5
+#define rst  D4
+
+![](/images/OLED_wired_compr.jpg)
+
+![](/images/Photon%202%20wired_compr.jpg)
+
+
 - Optional: Connect the piezo buzzer with two wires, i used A2 for the positive pin, and GND for the negative.
 
 
