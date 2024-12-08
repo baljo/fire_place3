@@ -119,7 +119,7 @@ Below the first thermal images of me, first in ASCII, second in colors. The qual
 While showing thermal images the frame rate is around 1 - 2 FPS which is sufficient in many cases, especially as temperatures generally do not change very quickly. Still, it should be possible to double or even triple the frame rate by using higher SPI and I2C frequencies, though these might need shorter and/or soldered wires. The code can likely be optimized even more, particularly by using integers instead of floats in the processor-heavy loops, and decreasing color accuracy.
 
 ## Bitmap Frame Rate
-The original idea was to show GIF-animations on the display, but due to the slowness I needed to stick to showing static images with blinking text. Again, this could probably be optimized by using other methods for writing to the display
+The original idea was to show GIF-animations on the display, but due to the slowness I needed to stick to showing static images with blinking text. Again, this could probably be optimized by using other methods for writing to the display.
 
 The Santa bitmaps were created with a free online tool, and then I used the magick-program to convert them to correct resolution (using this command line prompt: `magick convert magick convert tenor3-ezgif.com-optimize.gif -resize 64x96! -depth 8 frame_%03d.bmp`. To make the bitmaps usable, I converted them to .h-files using [this Python-program](/src/convert_bmp_to_h.py) I created.
 
@@ -158,7 +158,7 @@ uint16_t oledBuffer[96 * 64];       // Back buffer for OLED
 
 ## Temperature Threshold and Bitmap Initializations
 
-Here you'll find the warning threshold `hot_temp`, i.e. when should it warn that the chimney is too hot for Santa. In this program the average temperature of all the pixels is compared to this threshold, but you can of course use the maximum temp instead if you want. Especially with the wide-angle camera I used, it took a long time until the fire was so hot that the average temperature reached 58°C.
+Here you'll find the warning threshold `hot_temp`, i.e. when should it warn that the chimney is too hot for Santa. In this program, the average temperature of all the pixels is compared to this threshold, but you can of course use the maximum temp instead if you want. Especially with the wide-angle camera I used, it took a long time until the fire was so hot that the average temperature reached 58°C.
 `show_cozy` is used to determine how often a satisfied Santa should be shown on the display, here it's once a minute.
 The `#include "frame...`-lines includes the four bitmap .h-files that will be used later.  
 
@@ -227,7 +227,7 @@ void drawStaticImage(const uint16_t* image) {
 
 ## Main Loop
 
-In the `loop()`-function the main functionality is the "heavy" loop which is color-mapping and interpolating between the thermal camera and the display.
+In the `loop()`-function the main functionality is the processor-heavy loop which is color-mapping and interpolating between the thermal camera and the display.
 
 ```
     // Fill the OLED buffer with interpolated and color-mapped data
