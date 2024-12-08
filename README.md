@@ -99,16 +99,11 @@ Only a few steps are needed to assemble the system:
 | rst/res   | D4        |
 
 
-
-
 ![](/images/OLED_wired_compr.jpg)
-
 ![](/images/Photon%202%20wired_compr.jpg)
 
 
 - Optional: Connect the piezo buzzer with two wires, i used A2 for the positive pin, and GND for the negative.
-
-
 
 
 # Code Explanations
