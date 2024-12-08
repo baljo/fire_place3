@@ -123,6 +123,9 @@ The original idea was to show GIF-animations on the display, but due to the slow
 
 The Santa bitmaps were created with a free online tool, and then I used the magick-program to convert them to correct resolution (using this command line prompt: `magick convert magick convert tenor3-ezgif.com-optimize.gif -resize 64x96! -depth 8 frame_%03d.bmp`. To be able to use the bitmaps I converted them to .h-files using [this Python-program](/src/convert_bmp_to_h.py) I created.
 
+![](/src/frames/frame_000.bmp)
+![](/src/frames/frame_034.bmp)
+
 
 ## Camera, Display, and Piezo Buzzer Settings
 
@@ -264,7 +267,7 @@ In addition, you'll also find the functions displaying numeric data on the displ
 
 # CONCLUSION #
 
-You might think this safety system is unnecessary as it's only used once a year. Festivities and whimsities aside, the system displays (literally!) how you with a few components and an affordable but very capable MCU can develop thermal imaging solutions for the other 364 days of the year!
+You might think this safety system is unnecessary as it's only used once a year. Festivities and whimsicalities aside, the system displays (literally!) how you with a few components and an affordable but very capable MCU can develop thermal imaging solutions for the other 364 days of the year!
 
 
 Feel free to clone [my Github repo](https://github.com/baljo/fire_place3) to build your own Santa Chimney Safety System!
