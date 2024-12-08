@@ -110,6 +110,11 @@ Only a few steps are needed to assemble the system:
 
 Once the devices are physically connected and working, it's relatively simple to display **text data** from the thermal camera to the OLED display. The main challenge lies in converting temperature data to a color scale, interpolating it while converting between different resolutions and aspect ratios (32x24 vs 96x64). Once that is accomplished, the code might need to be optimized and sped up to achieve better FPS than 0.5. Another challenge is to convert and optimize bitmaps for the animations.
 
+Below the first thermal images of me, first in ASCII, second in colors. The quality in real life is much better than the photo indicates:
+
+![](/images/ASCII_temps.png)
+![](/images/First_thermal_image.jpg)
+
 ## Thermal Image Frame Rate 
 While showing thermal images the frame rate is around 1 - 2 FPS which is sufficient in many cases, especially as temperatures generally do not change very quickly. Still, it should be possible to double or even triple the frame rate by using higher SPI and I2C frequencies, though these might need shorter and/or soldered wires. The code can likely be optimized even more, particularly by using integers instead of floats in the processor-heavy loops, and decreasing color accuracy.
 
