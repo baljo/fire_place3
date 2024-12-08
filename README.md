@@ -85,24 +85,21 @@ For this project, you’ll need:
 Only a few steps are needed to assemble the system:
 - Attach the Photon 2 to the Featherwing (or breadboard)
 - Connect the camera with a Grove cable to port I2C2 on the Featherwing
-- Connect the display with jumper wires 
+- Connect the display with jumper wires as per below *(nc = not connected = no wire needed)*
 
 | Display   | Photon 2  |
 | --------  | -------   |
-| mosi      | S0        |
-| sclk      | S2        |
-| cs        | S3        |
-| dc        | D5        |
-| rst       | D4        |
-| gnd       | gnd       |
 | vcc       | 3V3       |
+| gnd       | gnd       |
+| nc        | -         |
+| mosi/DIN  | S0        |
+| sclk/clk  | S2        |
+| cs        | S3        |
+| d/c       | D5        |
+| rst/res   | D4        |
 
 
-#define mosi S0
-#define sclk S2
-#define cs   S3
-#define dc   D5
-#define rst  D4
+
 
 ![](/images/OLED_wired_compr.jpg)
 
@@ -267,7 +264,7 @@ In addition, you'll also find the functions displaying numeric data on the displ
 
 # CONCLUSION #
 
+You might think this safety system is unnecessary as it's only used once a year. Festivities and whimsities aside, the system displays (literally!) how you with a few components and an affordable but very capable MCU can develop thermal imaging solutions for the other 364 days of the year!
 
 
-
-Feel free to clone [my Github repo](https://github.com/baljo/santa_detector) to build your own Santa Detector!
+Feel free to clone [my Github repo](https://github.com/baljo/fire_place3) to build your own Santa Chimney Safety System!
